@@ -6,8 +6,18 @@ const e = require('express')
 
 router.post('/submit-contact-form', async (req, res) => {
     try {
-        //console.log(req.body)
+        if (!req.body || Object.keys(req.body) > 1) {
+            throw new Error("'captchaToken' and 'formData' string must be included in the request body.")
+        }
         const { captchaToken, formData } = req.body
+
+        if (!captchaToken) {
+            throw new Error("'captchaToken' string must be included in the request body.")
+        }
+        if (!formData) {
+            throw new Error("'formData' object must be included in the request body.")
+        }
+
         const valid = await validateRecaptcha(captchaToken)
     
         if (valid) {
