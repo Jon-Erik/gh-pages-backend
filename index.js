@@ -13,11 +13,14 @@ app.use(express.json())
 
 const validatePublicReq = function (req, res, next) {
   console.log('Request URL:', req.url);
-  const { apiKey } = req.body;
-  if (apiKey && BACKEND_API_KEY == apiKey) {
+  try {
+    const { apiKey } = req.body;
+    if (apiKey !== BACKEND_API_KEY) {
+      throw new Error('Invalid key')
+    }
     next(); 
-  } else {
-    const msg = 'Invalid API Key. Will not process request.';
+  } catch (e) {
+    const msg = 'Invalid API Key. Will not process request.'
     console.log(msg)
     res.status(403).send({ msg, success: false })
   }
