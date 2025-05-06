@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { validateRecaptcha } = require('../services/recaptcha')
-const { sendContactFormData } = require('../services/sendgrid')
+const { sendContactFormData } = require('../services/email')
 const e = require('express')
 
 router.post('/submit-contact-form', async (req, res) => {
