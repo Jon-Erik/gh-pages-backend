@@ -19,27 +19,57 @@ async function sendContactFormData({ firstName, lastName, email, message }) {
   try {
     if (!firstName || !lastName || !email || !message) {
       throw new Error(
-        `Incomplete contact form submission data: ${JSON.stringify({ firstName, lastName, email, message })}`
+        `Incomplete contact form submission data: ${JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          message
+        })}`
       )
     }
 
-    const html = `
-            <div>
-                <h2>Contact form submission</h2>
-                <p>First Name: ${firstName}</p>
-                <p>Last Name: ${lastName}</p>
-                <p>Email: ${email}</p>
-                <p>Message: ${message}</p>
-            </div>
-        `
     const subject = `Contact form submission (jon-erik.github.io) from ${firstName} ${lastName}`
-
+    const html = `
+      <div>
+        <h2>Contact form submission</h2>
+        <p>First Name: ${firstName}</p>
+        <p>Last Name: ${lastName}</p>
+        <p>Email: ${email}</p>
+        <p>Message: ${message}</p>
+      </div>
+    `
     const response = await sendEmail({ html, subject })
 
     if (response.success) {
-      return {
-        success: true,
-        msg: `${response.msg}: contact form submitted successfully.`
+      const confirmationSubject = `Thank you for your message`
+      const confirmationHTML = `
+        <div>
+          <h2>Thanks for your message</h2>
+          <p>
+            Thank you for sending me a message, ${firstName} ${lastName}. This is an automated reply,
+            but I'll get back to you as soon as possible at ${email}. You sent me the following message:
+          </p>
+          <p>Message: ${message}</p>
+          <p>Regards, Jon-Erik Chandler</p>
+        </div>
+      `
+
+      const confirmationResponse = await sendEmail({
+        html: confirmationHTML,
+        subject: confirmationSubject,
+        to: email
+      })
+
+      if (confirmationResponse.success) {
+        return {
+          success: true,
+          msg: `${response.msg}: contact form submitted successfully.`
+        }
+      } else {
+        throw new Error(
+          'Submitted message but could not send confirmation email:',
+          confirmationResponse.msg
+        )
       }
     } else {
       throw new Error(response.msg)
