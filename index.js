@@ -12,19 +12,19 @@ app.use(cors())
 app.use(express.json())
 
 const validatePublicReq = function (req, res, next) {
-  console.log('Request URL:', req.url);
+  console.log('Request URL:', req.url)
   try {
-    const { apiKey } = req.body;
+    const { apiKey } = req.body
     if (apiKey !== BACKEND_API_KEY) {
       throw new Error('Invalid key')
     }
-    next(); 
+    next()
   } catch (e) {
     const msg = 'Invalid API Key. Will not process request.'
     console.log(msg)
     res.status(403).send({ msg, success: false })
   }
-};
+}
 app.use(validatePublicReq)
 
 app.use('/forms', formsRouter)
