@@ -12,7 +12,7 @@ app.use(cors())
 app.use(express.json())
 
 const validatePublicReq = function (req, res, next) {
-  console.log('Request URL:', req.url)
+  //console.log('Request URL:', req.url)
   try {
     const { apiKey } = req.body
     if (apiKey !== BACKEND_API_KEY) {
@@ -20,7 +20,7 @@ const validatePublicReq = function (req, res, next) {
     }
     next()
   } catch (e) {
-    const msg = 'Invalid API Key. Will not process request.'
+    const msg = `Invalid API Key. Will not process request to ${req.url}`
     console.log(msg)
     res.status(403).send({ msg, success: false })
   }

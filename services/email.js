@@ -57,6 +57,7 @@ async function sendContactFormData({ firstName, lastName, email, message }) {
       const confirmationResponse = await sendEmail({
         html: confirmationHTML,
         subject: confirmationSubject,
+        from: `Jon-Erik Chandler <${GOOGLE_USER_EMAIL}>`,
         to: email
       })
 
